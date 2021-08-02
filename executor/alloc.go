@@ -59,7 +59,6 @@ func GetTokenAccountsByOwner(tokenMint, owner common.PublicKey) (*[]string, erro
 	fasthttp.ReleaseRequest(req)
 
 	body := res.Body()
-	fmt.Printf("out: %v \n", string(body))
 
 	var resp TokenAccountsByOwnerResponse
 
@@ -74,7 +73,6 @@ func GetTokenAccountsByOwner(tokenMint, owner common.PublicKey) (*[]string, erro
 
 	var tokenAccounts []string
 
-	fmt.Printf("v: %v \n", resp.Result.Value)
 	for _, tokenAccount := range resp.Result.Value {
 		tokenAccounts = append(tokenAccounts, tokenAccount.Pubkey)
 	}
@@ -86,7 +84,7 @@ func (alloc *Allocator) Allocate(tokenMint, owner common.PublicKey) (*WalletAllo
 	RPCEndpoint, _ := solcmd.InferSystemDefinedRPC()
 
 	tokenAccounts, err := GetTokenAccountsByOwner(tokenMint, owner)
-	fmt.Printf("tokenAccounts: %v \n", tokenAccounts)
+
 	if err != nil {
 		return nil, err
 	}
