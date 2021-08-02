@@ -1,8 +1,10 @@
 package executor
 
 import (
+	"fmt"
 	"log"
 	"os"
+	"runtime/debug"
 
 	"github.com/urfave/cli/v2"
 	"github.com/valyala/fasthttp"
@@ -21,13 +23,13 @@ func Run() {
 		Usage: "Wallet alloc for solana",
 		Flags: []cli.Flag{
 			&cli.IntFlag{
-				Name:        "--port",
+				Name:        "port",
 				Value:       8081,
 				Usage:       "port for allocator",
 				Destination: &inputCfg.Port,
 			},
 			&cli.StringFlag{
-				Name:        "--keypair",
+				Name:        "keypair",
 				Value:       "",
 				Usage:       "allocator private key path",
 				Destination: &inputCfg.PKPath,
@@ -36,10 +38,11 @@ func Run() {
 		Action: func(c *cli.Context) error {
 			allocator, err := NewAllocator(inputCfg.PKPath)
 			if err != nil {
+				debug.PrintStack()
 				return err
 			}
 
-			fasthttp.ListenAndServe(":8081", allocator.RequestHandle)
+			fasthttp.ListenAndServe(fmt.Sprintf(":%v", inputCfg.Port), allocator.RequestHandle)
 			return nil
 		},
 	}
