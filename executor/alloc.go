@@ -49,8 +49,11 @@ func GetTokenAccountsByOwner(tokenMint, owner common.PublicKey) (*[]string, erro
 
 	req := fasthttp.AcquireRequest()
 	req.SetBody([]byte(encodedBody))
+
 	req.Header.SetMethodBytes([]byte("POST"))
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Access-Control-Allow-Origin", "*")
+
 	req.SetRequestURIBytes([]byte(RPCEndpoint))
 	res := fasthttp.AcquireResponse()
 	if err := fasthttp.Do(req, res); err != nil {
@@ -68,8 +71,6 @@ func GetTokenAccountsByOwner(tokenMint, owner common.PublicKey) (*[]string, erro
 	}
 
 	fasthttp.ReleaseResponse(res)
-	req.Header.SetContentType("application/json")
-
 
 	var tokenAccounts []string
 
