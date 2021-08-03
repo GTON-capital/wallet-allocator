@@ -52,7 +52,6 @@ func GetTokenAccountsByOwner(tokenMint, owner common.PublicKey) (*[]string, erro
 
 	req.Header.SetMethodBytes([]byte("POST"))
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Access-Control-Allow-Origin", "*")
 
 	req.SetRequestURIBytes([]byte(RPCEndpoint))
 	res := fasthttp.AcquireResponse()
@@ -138,6 +137,11 @@ func (alloc *Allocator) RequestHandle (ctx *fasthttp.RequestCtx) {
 		}
 
 		ctx.Response.Header.SetCanonical([]byte("Content-Type"), []byte("application/json"))
+		// ctx.Response.Header.SetCanonical([]byte("Access-Control-Allow-Origin"), []byte("*"))
+		ctx.Response.Header.Set("Access-Control-Allow-Origin", "*")
+		// ctx.Response.Header.SetCanonical([]byte("Access-Control-Allow-Methods"), []byte("GET, POST"))
+		// ctx.Response.Header.SetCanonical([]byte("Access-Control-Allow-Headers"), []byte("Content-Type"))
+
 		ctx.Response.SetStatusCode(200)
 
 		requestBody := ctx.Request.Body()
@@ -164,7 +168,6 @@ func (alloc *Allocator) RequestHandle (ctx *fasthttp.RequestCtx) {
 			return
 		}
 		ctx.Response.SetBody(encodedResult)
-
 
 		return
 	}
