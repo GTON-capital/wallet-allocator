@@ -130,6 +130,12 @@ func handleError(ctx *fasthttp.RequestCtx, err error) {
 // request handler in fasthttp style, i.e. just plain function.
 func (alloc *Allocator) RequestHandle (ctx *fasthttp.RequestCtx) {
 
+	ctx.Response.SetStatusCode(fasthttp.StatusOK)
+	ctx.Response.Header.Set("Access-Control-Allow-Origin", "*")
+	ctx.Response.Header.Set("Access-Control-Allow-Credentials", "true")
+	ctx.Response.Header.Set("Access-Control-Allow-Methods", "*")
+	ctx.Response.Header.Set("Access-Control-Allow-Headers", "Keep-Alive,User-Agent,Cache-Control,Content-Type,Authorization")
+
 	switch string(ctx.RequestURI()) {
 	case "/api/associated-token-account/alloc":
 		if string(ctx.Method()) != "POST" {
@@ -137,11 +143,7 @@ func (alloc *Allocator) RequestHandle (ctx *fasthttp.RequestCtx) {
 		}
 
 		ctx.Response.Header.SetCanonical([]byte("Content-Type"), []byte("application/json"))
-		// ctx.Response.Header.SetCanonical([]byte("Access-Control-Allow-Origin"), []byte("*"))
-		ctx.Response.Header.Set("Access-Control-Allow-Origin", "*")
-		// ctx.Response.Header.SetCanonical([]byte("Access-Control-Allow-Methods"), []byte("GET, POST"))
-		// ctx.Response.Header.SetCanonical([]byte("Access-Control-Allow-Headers"), []byte("Content-Type"))
-
+		
 		ctx.Response.SetStatusCode(200)
 
 		requestBody := ctx.Request.Body()
@@ -172,6 +174,5 @@ func (alloc *Allocator) RequestHandle (ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	ctx.Response.SetStatusCode(fasthttp.StatusNotFound)
 }
 
